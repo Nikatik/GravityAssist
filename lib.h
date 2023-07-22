@@ -7,7 +7,6 @@
 
 #define EPS (__float128) pow (10, -34)
 #define pi  3.1415926535897932384626433Q
-#define G   6.6743015151515151515151515Q * powq (10, -11)
 
 __float128 astep (__float128 T, __float128* x, __float128* y, __float128* z,
                   __float128* r, long long unsigned* i, long long unsigned* j,

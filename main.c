@@ -18,20 +18,20 @@ static __float128 g (__float128 t, __float128 x, __float128 y, __float128 z,
 static __float128 q (__float128 t, __float128 x, __float128 y, __float128 z,
                      __float128 r, __float128 M)        //   z` = q(t,x,y,z,r)
 {
-    return -G * M / powq ((powq (x, 2) + powq (y, 2)), 3.Q / 2.Q) * x * 3600;
+    return -M / powq ((powq (x, 2) + powq (y, 2)), 3.Q / 2.Q) * x;
 }
 
 static __float128 e (__float128 t, __float128 x, __float128 y, __float128 z,
                      __float128 r,
                      __float128 M)        //   r` = e(t,x,y,z,r)
 {
-    return -G * M / powq ((powq (x, 2) + powq (y, 2)), 3.Q / 2.Q) * y * 3600;
+    return -M / powq ((powq (x, 2) + powq (y, 2)), 3.Q / 2.Q) * y;
 }
 
 #pragma GCC diagnostic pop
 
 int mainq (unsigned int, __float128, __float128, __float128, __float128,
-           __float128);
+           __float128, __float128);
 int open (FILE**, char*, unsigned int*, unsigned int*);
 
 __float128 rd (FILE*);
@@ -50,6 +50,8 @@ int main (int argc, char* argv[])
     if (argc > 1)
     {
         unsigned int n;
+        __float128   G   = 6.6743015151515151515151515Q * powq (10, -11);
+        long double  M0  = powl (10, 10);
         long double  x0  = 500;
         long double  y0  = 500;
         long double  xs0 = powl (10, -2);
@@ -58,33 +60,38 @@ int main (int argc, char* argv[])
         sscanf (argv[1], "%u", &n);
         if (argc > 2)
         {
-            sscanf (argv[2], "%Lf", &x0);
+            sscanf (argv[2], "%Lf", &M0);
             if (argc > 3)
             {
-                sscanf (argv[3], "%Lf", &y0);
+                sscanf (argv[3], "%Lf", &x0);
                 if (argc > 4)
                 {
-                    sscanf (argv[4], "%Lf", &xs0);
+                    sscanf (argv[4], "%Lf", &y0);
                     if (argc > 5)
                     {
-                        sscanf (argv[5], "%Lf", &ys0);
-                        if (argc > 6) { sscanf (argv[6], "%Lf", &T0); }
+                        sscanf (argv[5], "%Lf", &xs0);
+                        if (argc > 6)
+                        {
+                            sscanf (argv[6], "%Lf", &ys0);
+                            if (argc > 7) { sscanf (argv[7], "%Lf", &T0); }
+                        }
                     }
                 }
             }
         }
-        return mainq (n, (__float128) x0, (__float128) y0, (__float128) xs0,
-                      (__float128) ys0, (__float128) T0);
+        return mainq (n, (__float128) M0 * G, (__float128) x0,
+                      (__float128) y0, (__float128) xs0, (__float128) ys0,
+                      (__float128) T0);
     }
-    return mainq (12, 500, 500, 1, -1, 10000);
+    return mainq (12, 0.66743015151515151515151515Q, 500, 500, 1, -1, 10000);
 }
 
-int mainq (unsigned int toller, __float128 x0, __float128 y0, __float128 xs0,
-           __float128 ys0, __float128 T0)
+int mainq (unsigned int toller, __float128 M0, __float128 x0, __float128 y0,
+           __float128 xs0, __float128 ys0, __float128 T0)
 {
     __float128 tol = (__float128) pow (10, -(int) toller);
 
-    __float128 M = powq (10, 10);
+    __float128 M = M0 * 3600; //convert parameter to minutes
     __float128 x = x0;
     __float128 y = y0;
     __float128 z = xs0;
