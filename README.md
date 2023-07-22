@@ -1,2 +1,2 @@
 # GravityAssist
-Visualizer of the gravity assist trajectory
+Visualizer of the Keplerian section of the trajectory
